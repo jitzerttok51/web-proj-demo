@@ -73,8 +73,6 @@ jobs:
         with:
           context: .
           push: true
-          tags:
-            - ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BUILD_MAJOR }}.${{ env.BUILD_MINOR }}.${{ env.BUILD_NUMBER }}
-            - ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          tags:  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.BUILD_MAJOR }}.${{ env.BUILD_MINOR }}.${{ env.BUILD_NUMBER }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
