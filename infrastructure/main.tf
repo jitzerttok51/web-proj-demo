@@ -22,7 +22,7 @@ variable "image_tag" {
 }
 
 provider "digitalocean" {
-    token = var.do_token
+  token = var.do_token
 }
 
 # import {
@@ -38,26 +38,26 @@ provider "digitalocean" {
 # terraform plan -generate-config-out=out.tf
 
 resource "digitalocean_database_cluster" "database-example" {
-  name                 = "web-app-14194"
+  name = "web-app-14194"
 
-  node_count           = 1
-  region               = "fra1"
+  node_count = 1
+  region     = "fra1"
 
-  engine               = "mysql"
-  version              = "8"
-  
-  size                 = "db-s-1vcpu-1gb"
-  storage_size_mib     = "10240"
+  engine  = "mysql"
+  version = "8"
+
+  size             = "db-s-1vcpu-1gb"
+  storage_size_mib = "10240"
 }
 
 resource "digitalocean_database_user" "softuni-user" {
   cluster_id = digitalocean_database_cluster.database-example.id
-  name = "softuni"
+  name       = "softuni"
 }
 
 resource "digitalocean_database_db" "softuni-db" {
   cluster_id = digitalocean_database_cluster.database-example.id
-  name = "softuni-db"
+  name       = "softuni-db"
 }
 
 output "db_username" {
@@ -66,7 +66,7 @@ output "db_username" {
 
 output "db_password" {
   sensitive = true
-  value = digitalocean_database_user.softuni-user.password
+  value     = digitalocean_database_user.softuni-user.password
 }
 
 output "db" {
@@ -83,8 +83,8 @@ output "connection_string" {
 
 resource "digitalocean_app" "demo-app" {
   spec {
-    name     = "demo-app-test123"
-    region   = "fra"
+    name   = "demo-app-test123"
+    region = "fra"
 
     service {
       http_port          = 8080
@@ -93,24 +93,24 @@ resource "digitalocean_app" "demo-app" {
       name               = "demo-app-comp-test123"
 
       env {
-        key = "DB_URL"
+        key   = "DB_URL"
         value = local.db_url
         scope = "RUN_TIME"
-        type = "GENERAL"
+        type  = "GENERAL"
       }
 
       env {
-        key = "DB_USER"
+        key   = "DB_USER"
         value = digitalocean_database_user.softuni-user.name
         scope = "RUN_TIME"
-        type = "GENERAL"
+        type  = "GENERAL"
       }
 
       env {
-        key = "DB_PASS"
+        key   = "DB_PASS"
         value = digitalocean_database_user.softuni-user.password
         scope = "RUN_TIME"
-        type = "SECRET"
+        type  = "SECRET"
       }
 
       image {
