@@ -1,0 +1,54 @@
+name: Destroy infrastructure
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  TF_VAR_do_token: ${{ secrets.DO_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Print ip 2
+        run: echo "$(curl https://ipv4.icanhazip.com/)"
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.0
+
+      - name: Terraform Format Prod
+        id: fmt-prod
+        run: terraform fmt -check
+        working-directory: ./infrastructure
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./infrastructure
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ./infrastructure
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform destroy -auto-approve
+        working-directory: ./infrastructure

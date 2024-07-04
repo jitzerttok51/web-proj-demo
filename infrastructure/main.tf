@@ -5,10 +5,24 @@ terraform {
       version = "~> 2.0"
     }
   }
+
+  backend "s3" {
+    key                         = "terraform.tfstate"
+    bucket                      = "tf-backend-34512"
+    region                      = "eu-central-1"
+    skip_credentials_validation = true
+    skip_metadata_api_check     = true
+  }
+}
+
+variable "do_token" {}
+
+variable "image_tag" {
+  default = "latest"
 }
 
 provider "digitalocean" {
-  token = ""
+    token = var.do_token
 }
 
 # import {
@@ -104,7 +118,7 @@ resource "digitalocean_app" "demo-app" {
         registry_credentials = null # sensitive
         registry_type        = "GHCR"
         repository           = "web-proj-demo"
-        tag                  = "1.0.4"
+        tag                  = var.image_tag
       }
     }
   }
