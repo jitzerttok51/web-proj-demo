@@ -32,3 +32,8 @@ bucket:
   region: ${BUCKET_REGION}
   name: ${BUCKET_NAME}
   url: ${BUCKET_URL}
+
+management:
+  endpoints.web.exposure.include: health,info,mappings,prometheus,metrics,threaddump,logfile,env,auditevents,loggers,features
+  endpoints.jmx.exposure.exclude: "*"
+  endpoint.health.show-details: always

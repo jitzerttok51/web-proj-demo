@@ -204,6 +204,9 @@ resource "digitalocean_app" "demo-app" {
         registry_type        = "GHCR"
         repository           = "web-proj-demo"
         tag                  = var.image_tag
+        deploy_on_push {
+          enabled = true
+        }
       }
     }
   }
