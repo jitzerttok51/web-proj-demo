@@ -17,12 +17,18 @@ terraform {
 
 variable "do_token" {}
 
+variable "SPACES_ACCESS_KEY_ID" {}
+
+variable "SPACES_SECRET_ACCESS_KEY" {}
+
 variable "image_tag" {
   default = "latest"
 }
 
 provider "digitalocean" {
   token = var.do_token
+  spaces_access_id = var.SPACES_ACCESS_KEY_ID
+  spaces_secret_key = var.SPACES_SECRET_ACCESS_KEY
 }
 
 # import {
@@ -79,6 +85,22 @@ locals {
 
 output "connection_string" {
   value = local.db_url
+}
+
+# Create a new Spaces Bucket
+resource "digitalocean_spaces_bucket" "storage" {
+  name   = "storage-34512"
+  region = "fra1"
+  acl    = "public-read"
+}
+
+# Add a CDN endpoint to the Spaces Bucket
+resource "digitalocean_cdn" "storage-cdn" {
+  origin = digitalocean_spaces_bucket.storage.bucket_domain_name
+}
+
+output "cnd-url" {
+  value = digitalocean_cdn.storage-cdn.endpoint
 }
 
 resource "digitalocean_app" "demo-app" {
