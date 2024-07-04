@@ -3,11 +3,13 @@ package com.example.webprojdemo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class StorageConfig {
 
     @Bean
+    @Profile("!test")
     public StorageService storageService(
         @Value("${bucket.key}") String doSpaceKey,
         @Value("${bucket.secret}") String doSpaceSecret,
