@@ -48,7 +48,7 @@ jobs:
         run: terraform validate -no-color
         working-directory: ./infrastructure
 
-      - name: Terraform Apply
+      - name: Terraform Destroy
         id: apply
         run: terraform destroy -auto-approve
         working-directory: ./infrastructure

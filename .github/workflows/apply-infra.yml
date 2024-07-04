@@ -56,5 +56,5 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform destroy -auto-approve
+        run: terraform apply -auto-approve
         working-directory: ./infrastructure
