@@ -26,8 +26,8 @@ variable "image_tag" {
 }
 
 provider "digitalocean" {
-  token = var.do_token
-  spaces_access_id = var.SPACES_ACCESS_KEY_ID
+  token             = var.do_token
+  spaces_access_id  = var.SPACES_ACCESS_KEY_ID
   spaces_secret_key = var.SPACES_SECRET_ACCESS_KEY
 }
 
@@ -99,8 +99,29 @@ resource "digitalocean_cdn" "storage-cdn" {
   origin = digitalocean_spaces_bucket.storage.bucket_domain_name
 }
 
+locals {
+  bucket_endpoint      = digitalocean_spaces_bucket.storage.endpoint
+  bucket_region        = digitalocean_spaces_bucket.storage.region
+  bucket_name          = digitalocean_spaces_bucket.storage.name
+  bucket_url           = "https://${digitalocean_cdn.storage-cdn.endpoint}/"
+  bucket_access_id     = var.SPACES_ACCESS_KEY_ID
+  bucket_access_secret = var.SPACES_SECRET_ACCESS_KEY
+}
+
+output "do_endpoint" {
+  value = digitalocean_spaces_bucket.storage.endpoint
+}
+
+output "do_region" {
+  value = digitalocean_spaces_bucket.storage.region
+}
+
+output "do_name" {
+  value = digitalocean_spaces_bucket.storage.name
+}
+
 output "cnd-url" {
-  value = digitalocean_cdn.storage-cdn.endpoint
+  value = local.bucket_url
 }
 
 resource "digitalocean_app" "demo-app" {
@@ -133,6 +154,48 @@ resource "digitalocean_app" "demo-app" {
         value = digitalocean_database_user.softuni-user.password
         scope = "RUN_TIME"
         type  = "SECRET"
+      }
+
+      env {
+        key   = "BUCKET_KEY"
+        value = local.bucket_access_id
+        scope = "RUN_TIME"
+        type  = "SECRET"
+      }
+
+      env {
+        key   = "BUCKET_SECRET"
+        value = local.bucket_access_secret
+        scope = "RUN_TIME"
+        type  = "SECRET"
+      }
+
+      env {
+        key   = "BUCKET_ENDPOINT"
+        value = local.bucket_endpoint
+        scope = "RUN_TIME"
+        type  = "GENERAL"
+      }
+
+      env {
+        key   = "BUCKET_REGION"
+        value = local.bucket_region
+        scope = "RUN_TIME"
+        type  = "GENERAL"
+      }
+
+      env {
+        key   = "BUCKET_NAME"
+        value = local.bucket_name
+        scope = "RUN_TIME"
+        type  = "GENERAL"
+      }
+
+      env {
+        key   = "BUCKET_URL"
+        value = local.bucket_url
+        scope = "RUN_TIME"
+        type  = "GENERAL"
       }
 
       image {

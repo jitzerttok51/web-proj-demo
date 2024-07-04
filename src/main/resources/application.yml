@@ -24,3 +24,11 @@ logging:
         SQL: DEBUG
       nodeValue: WARN
     blog: WARN
+
+bucket:
+  key: ${BUCKET_KEY}
+  secret: ${BUCKET_SECRET}
+  endpoint: ${BUCKET_ENDPOINT}
+  region: ${BUCKET_REGION}
+  name: ${BUCKET_NAME}
+  url: ${BUCKET_URL}
